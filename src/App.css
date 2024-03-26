@@ -1,0 +1,49 @@
+:root {
+  --dark-background: #1A1A1A;
+  --blue-accent: #00BCD4; /* Cyan-type blue */
+  --light-text: #FFFFFF;
+  --subtle-text: #CCCCCC;
+  --button-background: #00BCD4; /* Use the same accent color for buttons */
+  --button-text: #FFFFFF;
+}
+body {
+  margin: 0;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--dark-background);
+  color: var(--light-text);
+}
+
+.pomodoro {
+  text-align: center;
+}
+
+.message {
+  margin-bottom: 20px;
+  color: var(--blue-accent);
+}
+
+.timer {
+  font-size: 3em;
+  font-weight: bold;
+  color: var(--blue-accent);
+}
+
+.start-button, .stop-button, .reset-button{
+  background-color: var(--button-background);
+  color: var(--button-text);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.5em;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.start-button:hover, .stop-button:hover, .reset-button:hover{
+  background-color: #0097A7; /* Slightly darker shade of blue */
+}
