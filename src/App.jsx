@@ -7,6 +7,19 @@ function App() {
   const [minutes, setMinutes] = useState(25);
   const [seconds, setSeconds] = useState(0);
   const [displayMessage, setDisplayMessage] = useState(false);
+  const [editTime, setEditTime] = useState(false);
+  const [newMinutes, setNewMinutes] = useState(minutes);
+  const [newSeconds, setNewSeconds] = useState(seconds);
+
+  const handleEditTime = () => {
+    setEditTime(true);
+  };
+
+  const handleSaveTime = () => {
+    setMinutes(newMinutes);
+    setSeconds(newSeconds);
+    setEditTime(false);
+  };
 
   useEffect(() => {
     let interval = null;
@@ -74,8 +87,35 @@ function App() {
               <button className="reset-button" onClick={handleReset}>
                 Reset
               </button>
+              <button className="edit-button" onClick={handleEditTime}>
+                Edit Time
+              </button>
             </div>
           </>
+        )}
+        {editTime && (
+          <div className="modal">
+            <div className="modal-content">
+              <div className="edit-time">
+                <div className="edit-inputs">
+                  <input
+                    type="number"
+                    value={newMinutes}
+                    onChange={(e) => setNewMinutes(e.target.value)}
+                  />
+                  <span>:</span>
+                  <input
+                    type="number"
+                    value={newSeconds}
+                    onChange={(e) => setNewSeconds(e.target.value)}
+                  />
+                </div>
+                <button className="save-button" onClick={handleSaveTime}>
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
         )}
         {start && (
           <div className="pomodoro">
