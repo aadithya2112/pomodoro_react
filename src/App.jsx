@@ -98,6 +98,9 @@ function App() {
             <div className="modal-content">
               <div className="edit-time">
                 <div className="edit-inputs">
+                  <label htmlFor="" className="duration-label">
+                    Duration
+                  </label>
                   <input
                     type="number"
                     value={newMinutes}

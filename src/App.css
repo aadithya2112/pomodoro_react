@@ -96,3 +96,22 @@ body {
 .save-button:hover {
   background-color: var(--button-background); /* darker green */
 }
+
+.duration-label {
+  margin-right: 10px;
+}
+
+.timer-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.progress-bar {
+  position: absolute;
+  top: -20px; /* adjust as needed */
+  background-color: var(--dark-background);
+  width: 80%;
+  justify-content: center;
+}
