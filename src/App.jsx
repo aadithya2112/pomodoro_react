@@ -14,6 +14,7 @@ function App() {
   const [newBreakMinutes, setNewBreakMinutes] = useState(breakMinutes);
   const [newBreakSeconds, setNewBreakSeconds] = useState(breakSeconds);
   const [progress, setProgress] = useState(0); // Start at 0%
+  const [sessionCount, setSessionCount] = useState(0); // Session counter
 
   const handleEditTime = () => {
     setEditTime(true);
@@ -49,6 +50,9 @@ function App() {
             setMinutes(newMinutes);
             setSeconds(newSeconds);
             setIsFocusSession(true);
+
+            // Increment session count
+            setSessionCount((prevCount) => prevCount + 1);
           }
         }
 
@@ -172,7 +176,9 @@ function App() {
             <div className="timer">
               {timerMinutes}:{timerSeconds}
             </div>
-
+            <div className="session-count">
+              Sessions completed: {sessionCount}
+            </div>
             <button className="stop-button start-button" onClick={handleStop}>
               Stop
             </button>

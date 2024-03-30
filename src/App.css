@@ -9,6 +9,7 @@
 body {
   margin: 0;
   overflow: hidden;
+  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 .container {
   display: flex;
@@ -32,6 +33,7 @@ body {
   font-size: 3em;
   font-weight: bold;
   color: var(--blue-accent);
+  margin: 10px;
 }
 
 .start-button, .stop-button, .reset-button, .edit-button{
@@ -117,4 +119,9 @@ body {
   background-color: var(--dark-background);
   width: 80%;
   justify-content: center;
+}
+
+.session-count {
+  margin: 10px;
+  color: var(--subtle-text);
 }
