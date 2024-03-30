@@ -12,10 +12,10 @@ This is a Pomodoro Timer application built with React. The Pomodoro Technique is
 
 ## Installation
 1. Clone the respository
-   ```
-   git clone 
-   ```
-2.  Navigate into the cloned repository
+```
+   git clone https://github.com/aadithya2112/pomodoro_react.git
+```
+3.  Navigate into the cloned repository
    ```
    cd pomodoro_react
    ```
