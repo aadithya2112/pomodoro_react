@@ -14,20 +14,20 @@ This is a Pomodoro Timer application built with React. The Pomodoro Technique is
 ## Installation
 1. Clone the respository
 ```
-   git clone https://github.com/aadithya2112/pomodoro_react.git
+git clone https://github.com/aadithya2112/pomodoro_react.git
 ```
 
 3.  Navigate into the cloned repository
    ```
-   cd pomodoro_react
+cd pomodoro_react
    ```
 3. Install the dependencies
   ```
-  npm i
+npm i
 ```
 4. Start the application
 ```
-  npm run dev
+npm run dev
 ```
 
 ## Usage
