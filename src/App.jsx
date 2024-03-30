@@ -168,10 +168,11 @@ function App() {
                 <div className="">Break time! New session starts in </div>
               )}
             </div>
+            <progress value={progress} max="100"></progress>
             <div className="timer">
               {timerMinutes}:{timerSeconds}
             </div>
-            <progress value={progress} max="100"></progress>
+
             <button className="stop-button start-button" onClick={handleStop}>
               Stop
             </button>

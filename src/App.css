@@ -39,7 +39,7 @@ body {
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  font-size: 1.5em;
+  font-size: 1.2em;
   cursor: pointer;
   margin: 10px;
 }
@@ -47,6 +47,8 @@ body {
 .start-button:hover, .stop-button:hover, .reset-button:hover, .edit-button:hover{
   background-color: #0097A7; /* Slightly darker shade of blue */
 }
+
+/* Edit Form */
 
 .modal {
   position: fixed;
