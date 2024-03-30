@@ -5,11 +5,15 @@ function App() {
   const [start, setStart] = useState(false);
   const [stop, setStop] = useState(false); // Added stop state
   const [minutes, setMinutes] = useState(25);
+  const [breakMinutes, setBreakMinutes] = useState(5); // Added breakMinutes state
+  const [breakSeconds, setBreakSeconds] = useState(0); // Added breakSeconds state
   const [seconds, setSeconds] = useState(0);
   const [displayMessage, setDisplayMessage] = useState(false);
   const [editTime, setEditTime] = useState(false);
   const [newMinutes, setNewMinutes] = useState(minutes);
   const [newSeconds, setNewSeconds] = useState(seconds);
+  const [newBreakMinutes, setNewBreakMinutes] = useState(breakMinutes); // Added newBreakMinutes state
+  const [newBreakSeconds, setNewBreakSeconds] = useState(breakSeconds); // Added newBreakSeconds state
 
   const handleEditTime = () => {
     setEditTime(true);
@@ -26,28 +30,39 @@ function App() {
 
     if (start) {
       interval = setInterval(() => {
-        clearInterval(interval);
-
-        if (seconds === 0) {
-          if (minutes !== 0) {
-            setSeconds(59);
-            setMinutes(minutes - 1);
-          } else {
-            let minutes = displayMessage ? 24 : 4;
-            let seconds = 59;
-
-            setSeconds(seconds);
-            setMinutes(minutes);
-            setDisplayMessage(!displayMessage);
-          }
-        } else {
+        if (seconds > 0) {
           setSeconds(seconds - 1);
         }
+        if (seconds === 0) {
+          if (minutes === 0) {
+            if (!displayMessage) {
+              setDisplayMessage(true);
+              setMinutes(breakMinutes);
+              setSeconds(breakSeconds);
+            } else {
+              setDisplayMessage(false);
+              setMinutes(newMinutes);
+              setSeconds(newSeconds);
+            }
+          } else {
+            setMinutes(minutes - 1);
+            setSeconds(59);
+          }
+        }
       }, 1000);
+    } else if (!start) {
+      clearInterval(interval);
     }
-
     return () => clearInterval(interval);
-  }, [start, seconds, minutes, displayMessage]);
+  }, [
+    start,
+    seconds,
+    minutes,
+    displayMessage,
+    breakMinutes,
+    breakSeconds,
+    stop,
+  ]);
 
   const timerMinutes = minutes < 10 ? `0${minutes}` : minutes;
   const timerSeconds = seconds < 10 ? `0${seconds}` : seconds;
@@ -99,7 +114,7 @@ function App() {
               <div className="edit-time">
                 <div className="edit-inputs">
                   <label htmlFor="" className="duration-label">
-                    Duration
+                    Focus Duration
                   </label>
                   <input
                     type="number"
@@ -111,6 +126,22 @@ function App() {
                     type="number"
                     value={newSeconds}
                     onChange={(e) => setNewSeconds(e.target.value)}
+                  />
+                </div>
+                <div className="edit-inputs">
+                  <label htmlFor="" className="duration-label">
+                    Break Duration
+                  </label>
+                  <input
+                    type="number"
+                    value={newBreakMinutes}
+                    onChange={(e) => setBreakMinutes(e.target.value)}
+                  />
+                  <span>:</span>
+                  <input
+                    type="number"
+                    value={newBreakSeconds}
+                    onChange={(e) => setBreakSeconds(e.target.value)}
                   />
                 </div>
                 <button className="save-button" onClick={handleSaveTime}>
