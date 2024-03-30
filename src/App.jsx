@@ -1,5 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
+import TimerComponent from "./components/TimerComponent";
+import ProgressBarComponent from "./components/ProgressBarComponent";
+import ControlsComponent from "./components/ControlsComponent";
+import SessionCounterComponent from "./components/SessionCounterComponent";
+import HistoricalDataPopup from "./components/HistoricalDataPopup";
 
 function App() {
   const [start, setStart] = useState(false);
@@ -15,6 +20,24 @@ function App() {
   const [newBreakSeconds, setNewBreakSeconds] = useState(breakSeconds);
   const [progress, setProgress] = useState(0); // Start at 0%
   const [sessionCount, setSessionCount] = useState(0); // Session counter
+  const [historicalData, setHistoricalData] = useState([]);
+  const [showHistoricalData, setShowHistoricalData] = useState(false);
+
+  // Load historical data from local storage on component mount
+  useEffect(() => {
+    const storedData = localStorage.getItem("pomodoroHistoricalData");
+    if (storedData) {
+      setHistoricalData(JSON.parse(storedData));
+    }
+  }, []);
+
+  // Save historical data to local storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem(
+      "pomodoroHistoricalData",
+      JSON.stringify(historicalData)
+    );
+  }, [historicalData]);
 
   const handleEditTime = () => {
     setEditTime(true);
@@ -26,6 +49,14 @@ function App() {
     setBreakMinutes(newBreakMinutes);
     setBreakSeconds(newBreakSeconds);
     setEditTime(false);
+  };
+
+  const handleShowHistoricalData = () => {
+    setShowHistoricalData(true);
+  };
+
+  const handleCloseHistoricalData = () => {
+    setShowHistoricalData(false);
   };
 
   useEffect(() => {
@@ -53,6 +84,16 @@ function App() {
 
             // Increment session count
             setSessionCount((prevCount) => prevCount + 1);
+
+            // Add session to historical data
+            const newSession = {
+              type: isFocusSession ? "Focus" : "Break",
+              duration: isFocusSession
+                ? `${newMinutes}:${newSeconds}`
+                : `${newBreakMinutes}:${newBreakSeconds}`,
+              timestamp: new Date().toLocaleString(),
+            };
+            setHistoricalData((prevData) => [...prevData, newSession]);
           }
         }
 
@@ -81,9 +122,6 @@ function App() {
     newSeconds,
   ]);
 
-  const timerMinutes = minutes < 10 ? `0${minutes}` : minutes;
-  const timerSeconds = seconds < 10 ? `0${seconds}` : seconds;
-
   const handleStart = () => {
     setStart(true);
   };
@@ -105,21 +143,15 @@ function App() {
       <div className="container">
         {!start && (
           <div className="starting-container">
-            <div className="pomodoro">
-              <div className="timer">
-                {timerMinutes}:{timerSeconds}
-              </div>
-              <progress value={progress} max="100"></progress>
-            </div>
-            <button className="start-button" onClick={handleStart}>
-              Start
-            </button>
-            <button className="reset-button" onClick={handleReset}>
-              Reset
-            </button>
-            <button className="edit-button" onClick={handleEditTime}>
-              Edit Time
-            </button>
+            <TimerComponent minutes={minutes} seconds={seconds} />
+            <ProgressBarComponent progress={progress} />
+            <ControlsComponent
+              isRunning={start}
+              handleStart={handleStart}
+              handleStop={handleStop}
+              handleReset={handleReset}
+              handleEditTime={handleEditTime}
+            />
           </div>
         )}
         {editTime && (
@@ -172,22 +204,30 @@ function App() {
                 <div className="">Break time! New session starts in </div>
               )}
             </div>
-            <progress value={progress} max="100"></progress>
-            <div className="timer">
-              {timerMinutes}:{timerSeconds}
-            </div>
-            <div className="session-count">
-              Sessions completed: {sessionCount}
-            </div>
-            <button className="stop-button start-button" onClick={handleStop}>
-              Stop
-            </button>
-            <button className="reset-button" onClick={handleReset}>
-              Reset
-            </button>
+            <ProgressBarComponent progress={progress} />
+            <TimerComponent minutes={minutes} seconds={seconds} />
+            <SessionCounterComponent sessionCount={sessionCount} />
+            <ControlsComponent
+              isRunning={start}
+              handleStop={handleStop}
+              handleReset={handleReset}
+              handleEditTime={handleEditTime}
+            />
           </div>
         )}
       </div>
+      {showHistoricalData && (
+        <HistoricalDataPopup
+          historicalData={historicalData}
+          onClose={handleCloseHistoricalData}
+        />
+      )}
+      <button
+        className="historical-data-button"
+        onClick={handleShowHistoricalData}
+      >
+        Historical Data
+      </button>
     </>
   );
 }
