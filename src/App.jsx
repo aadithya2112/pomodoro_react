@@ -3,17 +3,17 @@ import "./App.css";
 
 function App() {
   const [start, setStart] = useState(false);
-  const [stop, setStop] = useState(false); // Added stop state
+  const [isFocusSession, setIsFocusSession] = useState(true);
   const [minutes, setMinutes] = useState(25);
-  const [breakMinutes, setBreakMinutes] = useState(5); // Added breakMinutes state
-  const [breakSeconds, setBreakSeconds] = useState(0); // Added breakSeconds state
   const [seconds, setSeconds] = useState(0);
-  const [displayMessage, setDisplayMessage] = useState(false);
+  const [breakMinutes, setBreakMinutes] = useState(5);
+  const [breakSeconds, setBreakSeconds] = useState(0);
   const [editTime, setEditTime] = useState(false);
   const [newMinutes, setNewMinutes] = useState(minutes);
   const [newSeconds, setNewSeconds] = useState(seconds);
-  const [newBreakMinutes, setNewBreakMinutes] = useState(breakMinutes); // Added newBreakMinutes state
-  const [newBreakSeconds, setNewBreakSeconds] = useState(breakSeconds); // Added newBreakSeconds state
+  const [newBreakMinutes, setNewBreakMinutes] = useState(breakMinutes);
+  const [newBreakSeconds, setNewBreakSeconds] = useState(breakSeconds);
+  const [progress, setProgress] = useState(0); // Start at 0%
 
   const handleEditTime = () => {
     setEditTime(true);
@@ -22,6 +22,8 @@ function App() {
   const handleSaveTime = () => {
     setMinutes(newMinutes);
     setSeconds(newSeconds);
+    setBreakMinutes(newBreakMinutes);
+    setBreakSeconds(newBreakSeconds);
     setEditTime(false);
   };
 
@@ -31,37 +33,48 @@ function App() {
     if (start) {
       interval = setInterval(() => {
         if (seconds > 0) {
-          setSeconds(seconds - 1);
-        }
-        if (seconds === 0) {
-          if (minutes === 0) {
-            if (!displayMessage) {
-              setDisplayMessage(true);
-              setMinutes(breakMinutes);
-              setSeconds(breakSeconds);
-            } else {
-              setDisplayMessage(false);
-              setMinutes(newMinutes);
-              setSeconds(newSeconds);
-            }
+          setSeconds((prevSeconds) => prevSeconds - 1);
+        } else if (minutes > 0) {
+          setSeconds(59);
+          setMinutes((prevMinutes) => prevMinutes - 1);
+        } else {
+          // Timer reached 0
+          if (isFocusSession) {
+            // Switch to Break timer
+            setMinutes(breakMinutes);
+            setSeconds(breakSeconds);
+            setIsFocusSession(false);
           } else {
-            setMinutes(minutes - 1);
-            setSeconds(59);
+            // Switch to Focus timer
+            setMinutes(newMinutes);
+            setSeconds(newSeconds);
+            setIsFocusSession(true);
           }
         }
+
+        // Calculate progress
+        const totalSeconds = isFocusSession
+          ? newMinutes * 60 + newSeconds
+          : newBreakMinutes * 60 + newBreakSeconds;
+        const remainingSeconds = minutes * 60 + seconds;
+        const calculatedProgress =
+          ((totalSeconds - remainingSeconds) / totalSeconds) * 100; // Calculate progress as percentage
+        setProgress(calculatedProgress);
       }, 1000);
-    } else if (!start) {
+    } else {
       clearInterval(interval);
     }
+
     return () => clearInterval(interval);
   }, [
     start,
     seconds,
     minutes,
-    displayMessage,
+    isFocusSession,
     breakMinutes,
     breakSeconds,
-    stop,
+    newMinutes,
+    newSeconds,
   ]);
 
   const timerMinutes = minutes < 10 ? `0${minutes}` : minutes;
@@ -69,44 +82,41 @@ function App() {
 
   const handleStart = () => {
     setStart(true);
-    setStop(false);
   };
 
   const handleStop = () => {
     setStart(false);
-    setStop(true);
   };
 
   const handleReset = () => {
     setStart(false);
-    setStop(false);
     setMinutes(25);
     setSeconds(0);
-    setDisplayMessage(false);
+    setIsFocusSession(true);
+    setProgress(0);
   };
 
   return (
     <>
       <div className="container">
         {!start && (
-          <>
-            <div className="starting-container">
-              <div className="pomodoro">
-                <div className="timer">
-                  {timerMinutes}:{timerSeconds}
-                </div>
+          <div className="starting-container">
+            <div className="pomodoro">
+              <div className="timer">
+                {timerMinutes}:{timerSeconds}
               </div>
-              <button className="start-button" onClick={handleStart}>
-                Start
-              </button>
-              <button className="reset-button" onClick={handleReset}>
-                Reset
-              </button>
-              <button className="edit-button" onClick={handleEditTime}>
-                Edit Time
-              </button>
+              <progress value={progress} max="100"></progress>
             </div>
-          </>
+            <button className="start-button" onClick={handleStart}>
+              Start
+            </button>
+            <button className="reset-button" onClick={handleReset}>
+              Reset
+            </button>
+            <button className="edit-button" onClick={handleEditTime}>
+              Edit Time
+            </button>
+          </div>
         )}
         {editTime && (
           <div className="modal">
@@ -135,13 +145,13 @@ function App() {
                   <input
                     type="number"
                     value={newBreakMinutes}
-                    onChange={(e) => setBreakMinutes(e.target.value)}
+                    onChange={(e) => setNewBreakMinutes(e.target.value)}
                   />
                   <span>:</span>
                   <input
                     type="number"
                     value={newBreakSeconds}
-                    onChange={(e) => setBreakSeconds(e.target.value)}
+                    onChange={(e) => setNewBreakSeconds(e.target.value)}
                   />
                 </div>
                 <button className="save-button" onClick={handleSaveTime}>
@@ -154,13 +164,14 @@ function App() {
         {start && (
           <div className="pomodoro">
             <div className="message">
-              {displayMessage && (
+              {!isFocusSession && (
                 <div className="">Break time! New session starts in </div>
               )}
             </div>
             <div className="timer">
               {timerMinutes}:{timerSeconds}
             </div>
+            <progress value={progress} max="100"></progress>
             <button className="stop-button start-button" onClick={handleStop}>
               Stop
             </button>
