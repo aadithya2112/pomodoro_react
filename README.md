@@ -1,6 +1,7 @@
 # Pomodoro Timer App
 
 This is a Pomodoro Timer application built with React. The Pomodoro Technique is a time management method that uses a timer to break work into intervals, traditionally 25 minutes in length, separated by short breaks. [Here is the App](https://pomodoro-react-8x3du4x29-aadithya2112s-projects.vercel.app/).
+<img width="1440" alt="Screenshot 2024-03-30 at 6 08 23 PM" src="https://github.com/aadithya2112/pomodoro_react/assets/82932051/9698b380-978c-4024-94c6-b8281ffae8ad">
 
 ## Features
 - Set a focus session duration
@@ -15,6 +16,7 @@ This is a Pomodoro Timer application built with React. The Pomodoro Technique is
 ```
    git clone https://github.com/aadithya2112/pomodoro_react.git
 ```
+
 3.  Navigate into the cloned repository
    ```
    cd pomodoro_react
